@@ -1,7 +1,10 @@
+// Provee el campo de entrada de shadcn con los estilos compartidos.
+
 import * as React from "react"
 import { Input as InputPrimitive } from "@base-ui/react/input"
 import { cn } from "cn"
 
+// Muestra un campo de entrada con las propiedades y los estilos compartidos.
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
     <InputPrimitive

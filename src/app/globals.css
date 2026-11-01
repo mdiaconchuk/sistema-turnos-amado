@@ -1,3 +1,5 @@
+/* Define los colores, las fuentes y los estilos compartidos de la interfaz. */
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -97,12 +99,12 @@
   --radius: 0.625rem;
 
   /* Barra lateral del dashboard */
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #17313B;
+  --sidebar: #124858;
+  --sidebar-foreground: #FFFFFF;
   --sidebar-primary: #0090B0;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #E0F5FA;
-  --sidebar-accent-foreground: #006D87;
+  --sidebar-accent: #16758B;
+  --sidebar-accent-foreground: #FFFFFF;
   --sidebar-border: #D7E5E9;
   --sidebar-ring: #0090B0;
 }
@@ -152,4 +154,29 @@
   html {
     @apply font-sans;
   }
+}
+
+@layer components {
+  .panel { @apply rounded-xl border bg-card p-6; }
+  .campo { @apply grid gap-2 text-sm font-medium; }
+  .tabla { @apply w-full border-collapse text-left text-sm; }
+}
+
+/* Conserva las medidas y colores de la aplicación sobre el preset de shadcn. */
+@layer utilities {
+  .selector { @apply w-full; }
+  .selector [data-slot="native-select"] { @apply h-9 appearance-auto rounded-lg border bg-card px-3 text-sm outline-none focus-visible:border-input focus-visible:ring-2 focus-visible:ring-ring; }
+  .selector [data-slot="native-select-icon"] { @apply hidden; }
+  .aviso-error { @apply rounded-lg border border-destructive/25 bg-destructive/5 p-3 text-sm text-destructive; }
+  .tabla [data-slot="table-head"] { @apply h-auto border-b bg-muted/60 px-4 py-3 font-medium whitespace-normal text-muted-foreground; }
+  .tabla [data-slot="table-cell"] { @apply border-b px-4 py-3 whitespace-normal; }
+  .tabla [data-slot="table-row"] { @apply hover:bg-transparent; }
+  .tabla [data-estado="libre"] { @apply bg-cyan-50/40 hover:bg-cyan-50/40; }
+  .tabla [data-estado="reservado"] { @apply bg-blue-50/40 hover:bg-blue-50/40; }
+  .tabla [data-estado="atendido"] { @apply bg-green-50/50 hover:bg-green-50/50; }
+  .tabla [data-estado="ausente"] { @apply bg-amber-50/40 hover:bg-amber-50/40; }
+  .estado-libre { @apply border-cyan-200 bg-cyan-50 text-cyan-800 hover:bg-cyan-50; }
+  .estado-reservado { @apply border-blue-200 bg-blue-50 text-blue-800 hover:bg-blue-50; }
+  .estado-atendido { @apply border-green-200 bg-green-50 text-green-800 hover:bg-green-50; }
+  .estado-ausente { @apply border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-50; }
 }

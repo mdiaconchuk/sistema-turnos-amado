@@ -1,3 +1,5 @@
+// Provee los botones de shadcn con sus tamaños y variantes visuales.
+
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
@@ -39,6 +41,7 @@ const buttonVariants = cva(
   }
 )
 
+// Muestra un botón con el tamaño, la variante y los eventos recibidos.
 function Button({
   className,
   variant = "default",

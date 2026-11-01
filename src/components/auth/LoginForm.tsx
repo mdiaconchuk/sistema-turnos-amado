@@ -1,47 +1,54 @@
+// Envía las credenciales al backend, muestra errores y redirige después del ingreso.
+
 "use client";
 
-import { useState } from "react";
-import type { SubmitEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import { Eye, EyeOff, CircleAlert } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { mensajeError, solicitar } from "@/lib/api";
+import type { RespuestaSesion } from "@/types/autenticacion";
+import type { PropiedadesLogin } from "@/types/interfaz";
 
-export function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [loginError, setLoginError] = useState(false);
+// Muestra el formulario de ingreso y sus mensajes de carga y error.
+export function LoginForm({ sesionExpirada = false }: PropiedadesLogin) {
+  const [mostrarClave, establecerMostrarClave] = useState(false);
+  const [enviando, establecerEnviando] = useState(false);
+  const [error, establecerError] = useState("");
 
-  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
+  // Envía las credenciales y redirige según el rol que devuelve el backend.
+  async function ingresar(evento: SubmitEvent<HTMLFormElement>) {
+    evento.preventDefault();
+    if (enviando) return;
+    const datos = new FormData(evento.currentTarget);
+    establecerEnviando(true);
+    establecerError("");
 
-    // Simulación temporal de credenciales incorrectas.
-    // Más adelante se conectará con Supabase Auth.
-    setLoginError(true);
+    try {
+      const { user } = await solicitar<RespuestaSesion>("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ username: datos.get("username"), password: datos.get("password") }),
+      });
+      window.location.replace(user.role === "facturista" ? "/dashboard/reportes" : "/dashboard/agenda");
+    } catch (error) {
+      establecerError(mensajeError(error));
+    } finally {
+      establecerEnviando(false);
+    }
   }
 
   return (
     <div className="w-full">
-      {/* Encabezado */}
       <div className="mb-8">
         <h2 className="text-3xl font-semibold tracking-tight">Bienvenido</h2>
-
-        <p className="mt-2 text-sm text-muted-foreground">
-          Ingresá tus credenciales para continuar.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">Ingresá tus credenciales para continuar.</p>
       </div>
 
-      {/* Formulario */}
-      <form
-        onSubmit={handleSubmit}
-        onChange={() => setLoginError(false)}
-        className="space-y-5"
-      >
-        {/* Usuario */}
+      <form onSubmit={ingresar} onChange={() => establecerError("")} className="space-y-5">
         <div className="space-y-2">
           <Label htmlFor="username">Usuario</Label>
-
           <Input
             id="username"
             name="username"
@@ -53,57 +60,44 @@ export function LoginForm() {
           />
         </div>
 
-        {/* Contraseña */}
         <div className="space-y-2">
           <Label htmlFor="password">Contraseña</Label>
-
           <div className="relative">
             <Input
               id="password"
               name="password"
-              type={showPassword ? "text" : "password"}
+              type={mostrarClave ? "text" : "password"}
               placeholder="Ingresá tu contraseña"
               autoComplete="current-password"
               required
               className="h-11 pr-11"
             />
-
-            {/* Mostrar / ocultar contraseña */}
-            <button
+            <Button
               type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              aria-label={
-                showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-              }
-              aria-pressed={showPassword}
-              className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+              variant="ghost"
+              onClick={() => establecerMostrarClave((anterior) => !anterior)}
+              aria-label={mostrarClave ? "Ocultar contraseña" : "Mostrar contraseña"}
+              aria-pressed={mostrarClave}
+              className="absolute inset-y-0 right-0 h-full w-11 rounded-none border-0 p-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
             >
-              {showPassword ? (
-                <EyeOff className="size-4" aria-hidden="true" />
-              ) : (
-                <Eye className="size-4" aria-hidden="true" />
-              )}
-            </button>
+              {mostrarClave ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </Button>
           </div>
         </div>
 
-        {/* Error de autenticación */}
-        {loginError && (
-          <Alert
-            variant="destructive"
-            role="alert"
-            className="border-destructive/20 bg-destructive/10"
-          >
+        {sesionExpirada && (
+          <p role="status" className="text-sm text-muted-foreground">
+            Tu sesión finalizó o no está disponible. Volvé a iniciar sesión.
+          </p>
+        )}
+        {error && (
+          <Alert variant="destructive" role="alert" className="border-destructive/20 bg-destructive/10">
             <CircleAlert aria-hidden="true" />
-            <AlertDescription>
-              Usuario o contraseña incorrectos.
-            </AlertDescription>
+            <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-
-        {/* Botón de ingreso */}
-        <Button type="submit" size="lg" className="w-full">
-          Ingresar
+        <Button type="submit" size="lg" className="w-full" disabled={enviando}>
+          {enviando ? "Ingresando…" : "Ingresar"}
         </Button>
       </form>
     </div>

@@ -1,3 +1,5 @@
+// Provee los componentes de shadcn para mostrar avisos y errores.
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
@@ -18,6 +20,7 @@ const alertVariants = cva(
   }
 )
 
+// Muestra un aviso con la variante visual y el contenido indicados.
 function Alert({
   className,
   variant,
@@ -33,6 +36,7 @@ function Alert({
   )
 }
 
+// Muestra el título de un aviso.
 function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -46,6 +50,7 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Muestra el texto explicativo de un aviso.
 function AlertDescription({
   className,
   ...props
@@ -62,6 +67,7 @@ function AlertDescription({
   )
 }
 
+// Ubica una acción junto al contenido del aviso.
 function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div

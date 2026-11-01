@@ -1,3 +1,5 @@
+// Muestra la pantalla de ingreso y el aviso de sesión finalizada.
+
 
 import Image from "next/image"
 import { LoginForm } from "@/components/auth/LoginForm"
@@ -6,7 +8,9 @@ export const metadata = {
   title: "Iniciar sesión | Consultorio Dr. Amado",
 };
 
-export default function LoginPage() {
+// Muestra el login e informa si la sesión anterior terminó.
+export default async function PaginaLogin({ searchParams }: PageProps<"/login">) {
+  const { sesion } = await searchParams;
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-6">
       <div className="grid w-full max-w-5xl overflow-hidden rounded-2xl border bg-card shadow-xl md:grid-cols-2">
@@ -60,7 +64,7 @@ export default function LoginPage() {
         {/* Panel derecho: formulario */}
         <section className="flex items-center justify-center bg-card p-8 md:p-12">
           <div className="w-full max-w-sm">
-            <LoginForm />
+            <LoginForm sesionExpirada={sesion === "expirada"} />
           </div>
         </section>
 

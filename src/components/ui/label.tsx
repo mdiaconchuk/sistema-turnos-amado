@@ -1,8 +1,11 @@
+// Provee las etiquetas de shadcn para identificar los campos de los formularios.
+
 "use client"
 
 import * as React from "react"
 import { cn } from "cn"
 
+// Muestra la etiqueta que identifica un control del formulario.
 function Label({ className, ...props }: React.ComponentProps<"label">) {
   return (
     <label

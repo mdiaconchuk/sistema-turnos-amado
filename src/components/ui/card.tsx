@@ -1,6 +1,9 @@
+// Provee las tarjetas de shadcn y sus partes para agrupar contenido.
+
 import * as React from "react"
 import { cn } from "cn"
 
+// Agrupa contenido en una tarjeta con el tamaño y los estilos indicados.
 function Card({
   className,
   size = "default",
@@ -19,6 +22,7 @@ function Card({
   )
 }
 
+// Organiza el encabezado de una tarjeta.
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -32,6 +36,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Muestra el título de una tarjeta.
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -45,6 +50,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Muestra la descripción de una tarjeta.
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -55,6 +61,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Ubica una acción dentro del encabezado de una tarjeta.
 function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -68,6 +75,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Contiene el cuerpo principal de una tarjeta.
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -78,6 +86,7 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Organiza el contenido inferior y las acciones de una tarjeta.
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
