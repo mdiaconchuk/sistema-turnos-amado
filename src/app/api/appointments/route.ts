@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { apiError, requireRole } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidDate, isValidTime } from "@/lib/validation";
+import { isValidDate, isValidTime, isValidOptionalPhone, INVALID_PHONE_MESSAGE } from "@/lib/validation";
 import { checkSlotAvailable, toApiAppointment } from "@/lib/appointments";
 
 export async function POST(request: Request) {
@@ -23,13 +23,15 @@ export async function POST(request: Request) {
   const patientName = text(body.patientName);
   const dni = text(body.dni);
   const obraSocial = text(body.obraSocial);
-  const phone = text(body.phone) || null;
 
   if (!isValidDate(date)) return apiError(400, "VALIDATION_ERROR", "Fecha inválida (YYYY-MM-DD)");
   if (!isValidTime(startTime)) return apiError(400, "VALIDATION_ERROR", "Hora inválida (HH:mm)");
   if (!patientName) return apiError(400, "VALIDATION_ERROR", "El nombre del paciente es obligatorio");
   if (!/^\d{6,10}$/.test(dni)) return apiError(400, "VALIDATION_ERROR", "El DNI debe tener solo números (6 a 10 dígitos)");
   if (!obraSocial) return apiError(400, "VALIDATION_ERROR", "La obra social es obligatoria");
+
+  if (!isValidOptionalPhone(body.phone)) return apiError(400, "VALIDATION_ERROR", INVALID_PHONE_MESSAGE);
+  const phone = body.phone?.trim() || null;
 
   const availability = await checkSlotAvailable(date, startTime);
   if (!availability.ok) return apiError(422, "SLOT_NOT_AVAILABLE", availability.message);

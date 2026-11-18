@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { apiError, requireRole } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidDate, isValidTime } from "@/lib/validation";
+import { isValidDate, isValidTime, isValidOptionalPhone, INVALID_PHONE_MESSAGE } from "@/lib/validation";
 import { checkSlotAvailable, toApiAppointment } from "@/lib/appointments";
 import { parseId } from "@/lib/appointment-rules";
 
@@ -63,7 +63,8 @@ export async function PATCH(
     update.obra_social = v;
   }
   if ("phone" in body) {
-    update.phone = text(body.phone) || null;
+    if (!isValidOptionalPhone(body.phone)) return apiError(400, "VALIDATION_ERROR", INVALID_PHONE_MESSAGE);
+    update.phone = body.phone?.trim() || null;
   }
 
   if (Object.keys(update).length === 0) {

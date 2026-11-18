@@ -1,5 +1,15 @@
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+const PHONE_RE = /^(?=.*[0-9])\+?[0-9 ()-]+$/;
+
+export const INVALID_PHONE_MESSAGE = "El teléfono debe contener números. Podés usar espacios, guiones, paréntesis y un + al principio.";
+
+export function isValidOptionalPhone(value: unknown): value is string | null | undefined {
+  if (value === null || value === undefined) return true;
+  if (typeof value !== "string") return false;
+  const phone = value.trim();
+  return phone === "" || PHONE_RE.test(phone);
+}
 
 export function isValidDate(value: unknown): value is string {
   if (typeof value !== "string" || !DATE_RE.test(value)) return false;

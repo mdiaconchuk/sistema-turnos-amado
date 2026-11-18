@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { useConsultaApi } from "@/hooks/useConsultaApi";
 import { ErrorApi, mensajeError, solicitar } from "@/lib/api";
+import { isValidOptionalPhone, INVALID_PHONE_MESSAGE } from "@/lib/validation";
 import type { EstadoTurno, RespuestaDisponibilidad } from "@/types/turnos";
 import type { PropiedadesFormularioTurno, PropiedadesPaciente } from "@/types/interfaz";
 
@@ -52,16 +53,22 @@ export function FormularioTurno({ turno, fechaInicial, horaInicial, alCerrar, al
     evento.preventDefault();
     if (!puedeGuardar) return;
     const formulario = new FormData(evento.currentTarget);
+    const telefono = String(formulario.get("phone") ?? "").trim() || null;
+    const cambioTelefono = !turno || telefono !== (turno.phone?.trim() || null);
     const datos = {
       date: fecha,
       startTime: hora,
       patientName: String(formulario.get("patientName") ?? "").trim(),
       dni: String(formulario.get("dni") ?? ""),
       obraSocial: String(formulario.get("obraSocial") ?? "").trim(),
-      phone: String(formulario.get("phone") ?? "").trim() || null,
+      ...(cambioTelefono ? { phone: telefono } : {}),
     };
     if (!datos.patientName || !datos.obraSocial) {
       establecerError("Completá el nombre y la obra social.");
+      return;
+    }
+    if (cambioTelefono && !isValidOptionalPhone(telefono)) {
+      establecerError(INVALID_PHONE_MESSAGE);
       return;
     }
     establecerGuardando(true);
